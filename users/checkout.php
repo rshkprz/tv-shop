@@ -1,14 +1,48 @@
 <?php
-   if(!isset($_SESSION['email'])){
-  session_start();
+
+include '../admin/config.php';
+
+session_start();
+
+$email = $_SESSION['email'];
+$userID = $_SESSION['userID'];
+if(!isset($email)){
+   header('location:login.php');
+}
+
+if(isset($_POST['order_btn'])){
+
+   
+   $method = $_POST['method'];
+   $address = $_POST['street'].', '. $_POST['village'].', '. $_POST['district'].', '. $_POST['country'];
+   $placedOn = date('d-M-Y');
+
+   $cartTotal = 0;
+   $cartProducts[] = '';
+
+   $cartQuery = mysqli_query($conn, "SELECT * FROM `cart` 
+   JOIN users ON cart.userID = '$userID'
+   JOIN products ON cart.productID = products.productID") or die('query failed');
+   if(mysqli_num_rows($cartQuery) > 0){
+      while($cartItem = mysqli_fetch_assoc($cartQuery)){
+         $cartProducts[] = $cartItem['productName'].' ('.$cartItem['quantity'].') ';
+         $subTotal = ($cartItem['price'] * $cartItem['quantity']);
+         $cartTotal += $subTotal;
+      }
    }
-  include '../admin/config.php';
-   if(isset($_SESSION['email'])){
-    $email= $_SESSION['email'];
-    $result = mysqli_query($conn, "SELECT userID FROM users WHERE email='$email'");
-    $row = mysqli_fetch_assoc($result);
-    $_SESSION['userID'] = $row['userID'];
-   }
+
+   $serializedCart = serialize($cartProducts);
+
+   
+    mysqli_query($conn, "INSERT INTO `orders`(userID, method, deliveryAddress, totalProducts, orderTotalPrice, placedOn) VALUES('$userID', '$method', '$address', '$serializedCart', '$cartTotal', '$placedOn')") or die('query failed');
+    
+    mysqli_query($conn, "DELETE FROM `cart` WHERE userID = '$userID'") or die('query failed');
+    
+    echo "<script>alert('Order Placed successfully')</script>";
+    header ('location: cart.php');
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +66,7 @@
 <body>
 
  
-   
+    <!-- top navbar -->
 
     <!-- navbar -->
     <nav class="navbar navbar-expand-lg" id="navbar">
@@ -46,31 +80,24 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="main.php">Home</a>
               </li>
-              
+              <!-- <li class="nav-item">
+                <a class="nav-link" href="">Product</a>
+              </li> -->
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Brands
                 </a>
-                
-                <?php
-            $sql = "SELECT * FROM brands";
-            $result = mysqli_query($conn, $sql);
-
-            if(mysqli_num_rows($result) > 0){
-                echo "<ul class='dropdown-menu' aria-labelledby='navbarDropdown' style='background-color: rgb(67 0 86);'>";
-                //fetch rows from the result set
-                while ($row = mysqli_fetch_assoc($result)){
-                  echo "<li><a class='dropdown-item' href='#'>" . $row['brandName'] . "</a></li>";
-
-                }
-            }
-            else{
-                echo "No data found";
-            }
-            
-            echo "</ul>";
-            
-        ?>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(67 0 86);">
+                  <li><a class="dropdown-item" href="#">Samsung</a></li>
+                  <li><a class="dropdown-item" href="#">Apple</a></li>
+                  <li><a class="dropdown-item" href="#">Videocon</a></li>
+                  <li><a class="dropdown-item" href="#">TCL</a></li>
+                  <li><a class="dropdown-item" href="#">CG</a></li>
+                  <li><a class="dropdown-item" href="#">Skyworth</a></li>
+                  <li><a class="dropdown-item" href="#">ddddddddddddddd</a></li>
+                  <li><a class="dropdown-item" href="#">Laptop</a></li>
+                  <li><a class="dropdown-item" href="#">PC Moniter</a></li>
+                </ul>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="about.php">About</a>
@@ -84,18 +111,11 @@
               <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
 
-          <div class="top-navbar">
-            <a href="cart.php"> 
+            <div class="top-navbar">
+            <a href="register.html"> 
               <i class='fa fa-shopping-cart' style='color: white'></i>
-              </a>
-              <?php
-              if(isset($_SESSION['email'])){
-              echo "<a href='logout.php'>Logout</a>";
-              }
-              else{
-              echo "<a href='login.php'>Log In</a>";
-              }
-              ?>
+            </a>
+              <a href="login.php">Login</a>
           </div>
 
           </div>
@@ -103,118 +123,60 @@
       </nav>
     <!-- navbar -->
     
-
-
-
-
-
-
+    <!-- checkout -->
     
-    <!-- home content -->
-    <section class="home">
-    <div class="content">
-      <h1> <span>Televisions</span>
-        <br>
-        Up To <span id="span2">50%</span> Off
-      </h1>
-      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dicta, saepe.
-        <br>Lorem ipsum dolor sit amet consectetur.
-      </p>
-      <div class="btn"><button>Shop Now</button></div>
 
-    </div>
-    <!-- <div class="img">
-      <img src="./images/background.png" alt="">
-    </div> -->
+   
 
-    <div class="bgImg">
-      <div id="bgImg1">
 
+
+
+<section class="checkout">
+
+   <form action="" method="post">
+      <h3>place your order</h3>
+      <div class="flex">
+         
+         <div class="inputBox">
+            <span>Payment method :</span>
+            <select name="method">
+               <option value="Cash on delivery">Cash on delivery</option>
+               <option value="Credit card">Credit card</option>
+               <option value="Esewa">Esewa</option>
+               <option value="Khalti">Khalti</option>
+            </select>
+         </div>
+         <div class="inputBox">
+            <span>Street/ Tole:</span>
+            <input type="text" name="street" required placeholder="e.g. Sars tole">
+         </div>
+         <div class="inputBox">
+            <span>Village/ Municipality :</span>
+            <input type="text" name="village" required placeholder="e.g. mahalaxmi">
+         </div>
+         <div class="inputBox">
+            <span>District:</span>
+            <input type="text" name="district" required placeholder="e.g. Bhaktapur">
+         </div>
+         <div class="inputBox">
+            <span>Province :</span>
+            <input type="text" name="province" required placeholder="e.g. Bagmati">
+         </div>
+         <div class="inputBox">
+            <span>Country :</span>
+            <input type="text" name="country" required placeholder="e.g. Nepal">
+         </div>
       </div>
-    </div>
+      <input type="submit" value="order now" class="btn" name="order_btn">
+   </form>
 
-  </section>
-    <!-- home content -->
-
-
+</section>
 
 
 
 
 
-
-    <!-- product cards -->
-    <div class="container" id="product-cards">
-      <h1 class="text-center">PRODUCTS</h1>
-      <div class="row" style="margin-top: 30px;">
-          
-          <?php
-    $sql = "SELECT * FROM products LIMIT 8";
-    $result = mysqli_query($conn, $sql);
-    if(mysqli_num_rows($result) > 0){
-      
-        while ($row = mysqli_fetch_assoc($result)){
-            echo "<div class='col-md-3 py-5 py-md-2'>";
-            echo "<div class='card' style='height:400px; display:flex; '>";
-            echo "<form action='addToCart.php' method='POST'>";
-            echo "<input type='hidden' name='productID' value='" . $row['productID'] . "'>";
-            echo "<img src='" . $row['productPhoto'] . "' alt='image'>";
-            echo "<div class='card-body'>";
-            echo "<h3 class='text-center'>" . $row['productName'] . "</h3>";
-            echo "<h2>Rs " . $row['price'] . " <span><li><input type='submit' name='addToCart' value='Add To Cart' class='fa-solid fa-cart-shopping'></li></span></h2>";
-            echo "</div>";            
-            echo "</form>";
-            echo "</div>";
-            echo "</div>";
-        
-        }
-    }
-    mysqli_close($conn);
-?>
-
-
-          
-        </div>
-  </div>
-  </div>
-
-
-        
-    <!-- product cards -->
-
-
-
-
-
-
-    
-    
-    
-    <!-- offer -->
-    <div class="container" id="offer">
-      <div class="row">
-        <div class="col-md-3 py-3 py-md-0">
-          <i class="fa-solid fa-cart-shopping"></i>
-          <h3>Free Shipping</h3>
-          <p>On order over $1000</p>
-        </div>
-        <div class="col-md-3 py-3 py-md-0">
-          <i class="fa-solid fa-rotate-left"></i>
-          <h3>Free Returns</h3>
-          <p>Within 30 days</p>
-        </div>
-        <div class="col-md-3 py-3 py-md-0">
-          <i class="fa-solid fa-truck"></i>
-          <h3>Fast Delivery</h3>
-          <p>World Wide</p>
-        </div>
-        <div class="col-md-3 py-3 py-md-0">
-          <i class="fa-solid fa-thumbs-up"></i>
-          <h3>Big choice</h3>
-          <p>Of products</p>
-        </div>
-      </div>
-    </div>
+    <!-- checkout -->
 
 
     <!-- footer -->
@@ -287,27 +249,7 @@
       </div>
     </footer>
     <!-- footer -->
-
-
-
-
-
-
-
-    <a href="#" class="arrow"><i><img src="./images/arrow.png" alt=""></i></a>
-
-
-
-
-
-
-
-
-
-
-
-
-
+   <a href="#" class="arrow"><i><img src="./images/arrow.png" alt=""></i></a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 </body>

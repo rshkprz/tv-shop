@@ -15,6 +15,7 @@ if (isset($_POST['logIn'])) {
         if ($password == $login_user["password"]) {
             $_SESSION['email'] = $email;
             $_SESSION['name'] = $login_user["name"];
+            
             header('Location: main.php');
             exit();
         } else {

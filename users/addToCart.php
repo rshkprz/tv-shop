@@ -16,6 +16,7 @@
     if (mysqli_num_rows($result) == 1){
         $userDetail = mysqli_fetch_assoc($result);
         $userID = $userDetail['userID'];
+        $_SESSION['userID'] = $userID;
     }
     $sql = "INSERT INTO cart(productID, userID, quantity, totalPrice) VALUES ('$productID','$userID', 1, '$price')";
     if(mysqli_query($conn,$sql)){

@@ -63,11 +63,12 @@
     // }
     // $sql = "CREATE TABLE orders(
     //     orderID INT(5) AUTO_INCREMENT PRIMARY KEY,
-    //     paymentType VARCHAR(20) NOT NULL,
-    //     totalPrice INT(20) NOT NULL,
-    //     date datetime NOT NULL,
-    //     quantity int(5) NOT NULL,
-    //     userID INT(5),
+    //     method VARCHAR(30) NOT NULL,
+    //     deliveryAddress TEXT NOT NULL,
+    //     totalProducts LONGTEXT NOT NULL,
+    //     orderTotalPrice int(10) NOT NULL,
+    //     placedOn date NOT NULL,
+    //     userID INT(5) NOT NULL,
     //     FOREIGN KEY (userID) REFERENCES users(userID)
     //     ON DELETE CASCADE
     //     ON UPDATE CASCADE
@@ -95,21 +96,21 @@
     //     echo "error";
     // }
 
-    $sql = "CREATE TABLE cart(
-        userID INT(5) NOT NULL,
-        productID INT(5) NOT NULL,
-        FOREIGN KEY (userID) REFERENCES users(userID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-        FOREIGN KEY (productID) REFERENCES products(productID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-        )";
+    // $sql = "CREATE TABLE cart(
+    //     userID INT(5) NOT NULL,
+    //     productID INT(5) NOT NULL,
+    //     FOREIGN KEY (userID) REFERENCES users(userID)
+    //     ON DELETE CASCADE
+    //     ON UPDATE CASCADE,
+    //     FOREIGN KEY (productID) REFERENCES products(productID)
+    //     ON DELETE CASCADE
+    //     ON UPDATE CASCADE
+    //     )";
 
-    if (mysqli_query($conn,$sql)){
-        echo "Table Created!";
-    }
-    else{
-        echo "error";
-    }
+    // if (mysqli_query($conn,$sql)){
+    //     echo "Table Created!";
+    // }
+    // else{
+    //     echo "error";
+    // }
     ?>

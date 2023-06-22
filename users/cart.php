@@ -1,7 +1,24 @@
 <?php
     include '../admin/config.php';
     session_start();
+    if (!isset($_SESSION['email'])){
+      header ('location: login.php');
+      exit();
+    }
 
+    if(isset($_POST['updateCart'])){
+        $userID = $_POST['userID'];
+        $quantity = $_POST['quantity'];
+        mysqli_query($conn, "UPDATE `cart` SET quantity = '$quantity', totalPrice = '$subTotal' WHERE userID = '$userID'") or die('query failed');
+        echo "<script>alert('quantity updated');</script>";
+        header ('location: cart.php');
+        exit();
+     }
+     if(isset($_GET['delete'])){
+        $productID = $_GET['delete'];
+        mysqli_query($conn, "DELETE FROM `cart` WHERE productID = '$productID' AND userID = '" . $_SESSION['userID'] . "'") or die('query failed');
+        header('location:cart.php');
+     }
 ?>
 
 <!DOCTYPE html>
@@ -91,51 +108,62 @@
 
    <h1 class="heading">shopping cart</h1>
 
-   <table>
-
-      <thead>
-         <th>image</th>
-         <th>name</th>
-         <th>price</th>
-         <th>quantity</th>
-         <th>total price</th>
-         <th>action</th>
-      </thead>
-
-      <tbody>
+   
 
          <?php 
          $result = mysqli_query($conn, "SELECT userID FROM users WHERE email = '" . $_SESSION['email'] . "'");
          $row = mysqli_fetch_assoc($result);   
          $userID = $row['userID'];
 
-         $sql = "SELECT productPhoto, productName, price, quantity
+         $sql = "SELECT *
                 FROM cart
-                JOIN users ON cart.userID = $userID
-                JOIN products ON cart.productID = products.productID";
-         $selectCart = mysqli_query($conn, $sql);
-         $grand_total = 0;
-         if(mysqli_num_rows($selectCart) > 0){
-            $fetchCart = mysqli_fetch_assoc($selectCart);
+                JOIN products ON cart.productID = products.productID
+                WHERE userID = '$userID'";
+         $result = mysqli_query($conn, $sql);
+         $grandTotal = 0;
+         echo "<table>";
+         echo '<tr>';
+            echo '<th>image</th>';
+            echo '<th>name</th>';
+            echo '<th>price</th>';
+            echo '<th>quantity</th>';
+            echo '<th>total price</th>';
+            echo '<th>action</th>';
+            echo '</tr>';
+             if(mysqli_num_rows($result) > 0){
+             while($rows = mysqli_fetch_assoc($result)){
+               
             echo "<tr>";
-            echo "<td><img src='". $fetchCart["productPhoto"] . "'height='100px' width='100px'></td>";
-            echo "<td>". $fetchCart["productName"] . "</td>";
-            echo "<td>Rs". $fetchCart["price"] . "</td>";
-
+            echo "<td><img src='". $rows["productPhoto"] . "'height='100px' width='100px'></td>";
+            echo "<td>". $rows["productName"] . "</td>";
+            echo "<td>Rs". $rows["price"] . "</td>";
+            echo "<td><form action='' method='POST'>
+            <input type='hidden' name='userID' value='" . $userID . "'>
+            <input type='number' name='quantity' value='" . $rows['quantity'] . "'>
+            <input type='submit' min='1' name='updateCart' value='Update' class='option-btn'></td>";
+            echo "<td>" . $subTotal = ($rows['quantity'] * $rows['price'])."</form></td>";
+            echo '<td><a href="cart.php?delete=' . $rows['productID'] . '"  onclick="return confirm(\'Delete item from cart?\');">Delete</a></td>';
             
-
+            
+            
+            $grandTotal += floatval($subTotal);
             echo "</tr>";
-            
-         
+            }
         }
+        else{
+            echo '<p class="empty">Your cart is empty</p>';
+        }
+        echo "</table>";
+        
         ?>
-       </tbody>
-       </thead>   
+       
 
-   </table>
-
-   <div class="checkout-btn">
-      <a href="checkout.php" class="btn <?= ($grand_total > 1)?'':'disabled'; ?>">procced to checkout</a>
+   <div class="cart-total">
+      <p>grand total : <span>Rs.<?php echo $grandTotal; ?>/-</span></p>
+      <div class="flex">
+         <a href="main.php" class="option-btn">Continue shopping</a>
+         <a href="checkout.php" class="btn <?php echo ($grandTotal > 1)?'':'disabled'; ?>">Proceed to checkout</a>
+      </div>
    </div>
 
 </section>
