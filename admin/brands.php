@@ -18,7 +18,7 @@
 
         if(mysqli_num_rows($result) > 0){
             echo "<table>";
-            echo "<tr><th>Brand ID</th><th>Brand Name</th></tr>";
+            echo "<tr><th>Brand ID</th><th>Brand Name</th><th>Action</th></tr>";
 
             //fetch rows from the result set
             while ($row = mysqli_fetch_assoc($result)){

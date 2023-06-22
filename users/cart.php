@@ -1,35 +1,7 @@
 <?php
-session_start();
-include '../admin/config.php';
+    include '../admin/config.php';
+    session_start();
 
-if (isset($_POST['submit'])) {
-    $name = $_POST["name"];
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $address = $_POST["address"];
-    $mobile = $_POST["mobile"];
-
-    // Check if the email already exists in the database
-    $checkEmailQuery = "SELECT * FROM users WHERE email = '$email'";
-    $checkEmailResult = mysqli_query($conn, $checkEmailQuery);
-    if (mysqli_num_rows($checkEmailResult) > 0) {
-        echo '<script>alert("Email already exists!");</script>';
-        include "register.php";
-        exit();
-    }
-
-    // Insert the user data into the database
-    $insertQuery = "INSERT INTO users (name, email, password, address, mobileNumber) VALUES ('$name', '$email', '$password', '$address', '$mobile')";
-    if (mysqli_query($conn, $insertQuery)) {
-        echo '<script>alert("Registration successful!")</script>';
-        header ('Location:login.php');
-        exit();
-    } else {
-        echo '<script>alert("Error: ' . mysqli_error($conn) . '");</script>';
-    }
-}
-
-mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +11,6 @@ mysqli_close($conn);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TV Shop</title>
-    <link rel="stylesheet" href="forlogin.css">
     <link rel="stylesheet" href="stylefor.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <!-- bootstrap links -->
@@ -50,52 +21,12 @@ mysqli_close($conn);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">
     <!-- fonts links -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-        }
-
-        .regContainer {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .regContainer h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .regContainer label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .regContainer input[type="text"],
-        .regContainer input[type="email"],
-        .regContainer input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .regContainer input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
+
+ 
+    <!-- top navbar -->
+
     <!-- navbar -->
     <nav class="navbar navbar-expand-lg" id="navbar">
         <div class="container-fluid">
@@ -140,8 +71,10 @@ mysqli_close($conn);
             </form>
 
             <div class="top-navbar">
-                  <a href="login.php">Login</a>
-                  <a href="register.html">Register</a>
+            <a href="register.html"> 
+              <i class='fa fa-shopping-cart' style='color: white'></i>
+            </a>
+              <a href="login.php">Login</a>
           </div>
 
           </div>
@@ -149,30 +82,70 @@ mysqli_close($conn);
       </nav>
     <!-- navbar -->
     
-   <!-- login and sign up form -->
-   <div class="regContainer">
-        <h1>User Registration</h1>
-        <form method="POST" action="register.php">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required><br>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br>
+    <!-- CART -->
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br>
+    <div class="cartContainer">
 
-            <label for="address">Address:</label>
-            <input type="text" id="address" name="address" required><br>
+    <section class="shopping-cart">
 
-            <label for="mobile">Mobile Number:</label>
-            <input type="text" id="mobile" name="mobile" required><br>
+   <h1 class="heading">shopping cart</h1>
 
-            <input type="submit" name="submit" value="Register">
-        </form>
-    </div>
+   <table>
 
-   <!-- login and sign up form -->
+      <thead>
+         <th>image</th>
+         <th>name</th>
+         <th>price</th>
+         <th>quantity</th>
+         <th>total price</th>
+         <th>action</th>
+      </thead>
+
+      <tbody>
+
+         <?php 
+         $result = mysqli_query($conn, "SELECT userID FROM users WHERE email = '" . $_SESSION['email'] . "'");
+         $row = mysqli_fetch_assoc($result);   
+         $userID = $row['userID'];
+
+         $sql = "SELECT productPhoto, productName, price, quantity
+                FROM cart
+                JOIN users ON cart.userID = $userID
+                JOIN products ON cart.productID = products.productID";
+         $selectCart = mysqli_query($conn, $sql);
+         $grand_total = 0;
+         if(mysqli_num_rows($selectCart) > 0){
+            $fetchCart = mysqli_fetch_assoc($selectCart);
+            echo "<tr>";
+            echo "<td><img src='". $fetchCart["productPhoto"] . "'height='100px' width='100px'></td>";
+            echo "<td>". $fetchCart["productName"] . "</td>";
+            echo "<td>Rs". $fetchCart["price"] . "</td>";
+
+            
+
+            echo "</tr>";
+            
+         
+        }
+        ?>
+       </tbody>
+       </thead>   
+
+   </table>
+
+   <div class="checkout-btn">
+      <a href="checkout.php" class="btn <?= ($grand_total > 1)?'':'disabled'; ?>">procced to checkout</a>
+   </div>
+
+</section>
+
+</div>
+
+    <!-- CART -->
+
+
+
 
     <!-- footer -->
     <footer id="footer">

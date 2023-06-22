@@ -1,11 +1,42 @@
-  <!DOCTYPE html>
+<?php
+  include '../admin/config.php';
+  
+  session_start();
+
+  // $email = $_SESSION['email'];
+
+  // if(!isset($user_id)){
+  //   header('location:login.php');
+  // }
+
+  if(isset($_POST['submit'])){
+
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+
+    $msg = mysqli_real_escape_string($conn, $_POST['message']);
+    $sql = "INSERT INTO `message`(email, message) VALUES('$email', '$msg')";
+    if(mysqli_query($conn, $sql)){
+      echo "<script>alert('message sent')</script>";
+      header ('Location: contact.php');
+    }
+    else{
+      echo "<script>alert('message not sent')</script>";
+      include 'contact.php';
+    }
+
+   
+ }
+?>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electronic Shop</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="stylefor.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <!-- bootstrap links -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -18,36 +49,37 @@
 </head>
 <body>
 
-
+ 
     <!-- top navbar -->
 
     <!-- navbar -->
     <nav class="navbar navbar-expand-lg" id="navbar">
         <div class="container-fluid">
-          <a class="navbar-brand" href="index.html" id="logo"><span id="span1">E</span>Lectronic <span>Shop</span></a>
+          <a class="navbar-brand" href="main.php" id="logo"><span id="span1">T</span>V &nbsp;  <span>Shop</span></a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span><img src="./images/menu.png" alt="" width="30px"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                <a class="nav-link active" aria-current="page" href="main.php">Home</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Product</a>
-              </li>
+              <!-- <li class="nav-item">
+                <a class="nav-link" href="">Product</a>
+              </li> -->
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Category
+                  Brands
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(67 0 86);">
-                  <li><a class="dropdown-item" href="#">Samrt Phone</a></li>
-                  <li><a class="dropdown-item" href="#">Mobile Phone</a></li>
-                  <li><a class="dropdown-item" href="#">Cameras</a></li>
-                  <li><a class="dropdown-item" href="#">Fridge</a></li>
-                  <li><a class="dropdown-item" href="#">AC</a></li>
-                  <li><a class="dropdown-item" href="#">Samrt Watch</a></li>
-                  <li><a class="dropdown-item" href="#">Headphone</a></li>
+                  <li><a class="dropdown-item" href="#">Samsung</a></li>
+                  <li><a class="dropdown-item" href="#">Apple</a></li>
+                  <li><a class="dropdown-item" href="#">Videocon</a></li>
+                  <li><a class="dropdown-item" href="#">TCL</a></li>
+                  <li><a class="dropdown-item" href="#">CG</a></li>
+                  <li><a class="dropdown-item" href="#">Skyworth</a></li>
+                  <li><a class="dropdown-item" href="#">ddddddddddddddd</a></li>
                   <li><a class="dropdown-item" href="#">Laptop</a></li>
                   <li><a class="dropdown-item" href="#">PC Moniter</a></li>
                 </ul>
@@ -56,94 +88,98 @@
                 <a class="nav-link" href="about.html">About</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="contact.html">Contact</a>
+                <a class="nav-link" href="contact.php">Contact</a>
               </li>
             </ul>
             <form class="d-flex" id="search">
               <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
+
+            <div class="top-navbar">
+            <a href="cart.php"> 
+              <i class='fa fa-shopping-cart' style='color: white'></i>
+            </a>
+              <a href="login.php">Login</a>
+          </div>
+
           </div>
         </div>
       </nav>
     <!-- navbar -->
     
+   
+  
+    <style>
+        
+        .formContainer {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
+        h2 {
+            text-align: center;
+        }
 
+        .form-group {
+            margin-bottom: 20px;
+        }
 
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
+        .form-group textarea {
+            height: 100px;
+        }
 
- 
-    <div class="container" id="about">
-        <h3>PRODUCT</h3>
-        <hr><p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam odit quae modi cumque, dolorum id quaerat repudiandae tenetur facere veritatis inventore nam sequi. Id ipsam, odio rerum doloremque quam natus perferendis saepe est sapiente optio, ab dolore quaerat temporibus quia non, neque mollitia earum? Ab soluta magnam officiis quasi deleniti, tempora in ex vitae praesentium quaerat facere saepe laudantium temporibus nesciunt recusandae voluptas totam, iste nihil amet et. Fugiat iste eaque provident at omnis. Non asperiores rem fuga id vel ipsum libero corporis? Voluptatem, ullam omnis. Assumenda ipsa sunt sit quidem eligendi reiciendis, deleniti voluptatibus, molestias vel, ab ea quam?</p>
-        <hr>
-        <div class="row" style="margin-top: 50px;">
-            <div class="col-md-5 py-3 py-md-0">
-                <div class="card">
-                    <img src="./images/background.png" alt="">
-                </div>
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+    </style>
+
+    <div class="formContainer">
+        <h2>Contact Us</h2>
+        <form action="" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
             </div>
-            <div class="col-md-7 py-3 py-md-0">
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima fugit ad impedit libero quis. Ipsam totam accusantium non minima excepturi nemo doloremque, inventore dolores at aperiam voluptates voluptatem maiores odit. Unde dolorum similique facilis veritatis exercitationem excepturi sunt, non at quis deleniti! Mollitia quaerat temporibus reprehenderit neque esse unde minima sed illo, perferendis quidem eum voluptatem ipsam aliquam modi doloremque error. Odit amet veniam necessitatibus quis ad voluptate quidem laudantium, quia vitae quisquam dolorem deleniti temporibus reiciendis, rerum delectus quo cupiditate velit consequuntur neque eum est vero? Perspiciatis architecto provident illo sequi reprehenderit quasi excepturi hic sint perferendis, tempore cupiditate.</p>
-                <button>Read More...</button>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" name="submit">Submit</button>
+            </div>
+        </form>
     </div>
-
-
-
-
-
-
-
-
-    <!-- offer -->
-    <div class="container" id="offer">
-      <div class="row">
-        <div class="col-md-3 py-3 py-md-0">
-          <i class="fa-solid fa-cart-shopping"></i>
-          <h3>Free Shipping</h3>
-          <p>On order over $1000</p>
-        </div>
-        <div class="col-md-3 py-3 py-md-0">
-          <i class="fa-solid fa-rotate-left"></i>
-          <h3>Free Returns</h3>
-          <p>Within 30 days</p>
-        </div>
-        <div class="col-md-3 py-3 py-md-0">
-          <i class="fa-solid fa-truck"></i>
-          <h3>Fast Delivery</h3>
-          <p>World Wide</p>
-        </div>
-        <div class="col-md-3 py-3 py-md-0">
-          <i class="fa-solid fa-thumbs-up"></i>
-          <h3>Big choice</h3>
-          <p>Of products</p>
-        </div>
-      </div>
-    </div>
-    <!-- offer -->
-
-
-
-
-
-    
-    <!-- newslater -->
-    <div class="container" id="newslater">
-      <h3 class="text-center">Subscribe To The Electronic Shop For Latest upload.</h3>
-      <div class="input text-center">
-        <input type="text" placeholder="Enter Your Email..">
-        <button id="subscribe">SUBSCRIBE</button>
-      </div>
-    </div>
-    <!-- newslater -->
-
-
-
-
 
 
     <!-- footer -->
@@ -153,7 +189,7 @@
           <div class="row">
 
             <div class="col-lg-3 col-md-6 footer-contact">
-              <h3>Electronic Shop</h3>
+              <h3>TV Shop</h3>
               <p>
                 Karachi <br>
                 Sindh <br>
@@ -210,34 +246,14 @@
       <hr>
       <div class="container py-4">
         <div class="copyright">
-          &copy; Copyright <strong><span>Electronic Shop</span></strong>. All Rights Reserved
+          &copy; Copyright <strong><span>TV Shop</span></strong>. All Rights Reserved
         </div>
-        <div class="credits">
-          Designed by <a href="#">SA coding</a>
-        </div>
+
       </div>
     </footer>
     <!-- footer -->
 
-
-
-
-
-
-
     <a href="#" class="arrow"><i><img src="./images/arrow.png" alt=""></i></a>
-
-
-
-
-
-
-
-
-
-
-
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

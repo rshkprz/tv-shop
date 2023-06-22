@@ -23,8 +23,12 @@
             while ($row = mysqli_fetch_assoc($result)){
                 echo "<tr>";
                 echo "<td>". $row["productID"] . "</td>";
-                echo "<td><img src='data:image/jpeg;base64,".base64_encode($row['productPhoto'])."' alt='Image'></td>";
-                // echo "<td>". $row["productPhoto"] . "</td>";
+                // echo "<td><img src='data:image/jpeg;base64,".base64_encode($row['productPhoto'])."' alt='Image'></td>";
+                
+                //ADDED
+                echo "<td><img src='". $row["productPhoto"] . "'height='100px' width='100px'></td>";
+
+
                 echo "<td>". $row["productName"] . "</td>";
                 echo "<td>". $row["price"] . "</td>";
 

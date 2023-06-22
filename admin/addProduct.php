@@ -3,13 +3,19 @@
     require 'admin.php';
 
     if(isset($_POST['submit'])){
-    $productName = $_POST["productName"];
-    $description = $_POST["description"];
-    $price = $_POST["price"];
-    $photo = $_POST["productPhoto"];
+
+        
+        $productName = $_POST["productName"];
+        $description = $_POST["description"];
+        $price = $_POST["price"];
+        
+        //ADDED
+        $fileName = $_FILES ["productPhoto"]["name"];
+        $tempName = $_FILES ["productPhoto"]["tmp_name"];
+        $folder = "images/".$fileName;
+        move_uploaded_file($tempName, $folder);
     
-    
-    $sql = "INSERT INTO products(productName, description, price, productPhoto) VALUES ('$productName', '$description', '$price', '$photo')";
+    $sql = "INSERT INTO products(productName, description, price, productPhoto) VALUES ('$productName', '$description', '$price', '$folder')";
     if (mysqli_query($conn, $sql)) {
         header('Location: products.php');
         exit();
@@ -36,7 +42,7 @@
 <body>
     <h1>Products</h1>
     <div class="formContainer">
-    <form action="" method="POST">
+    <form action="" method="POST" enctype="multipart/form-data">
         <h3>Add product</h3>
         <label for="choosebrand">Choose Brand:</label>
         <?php
@@ -57,6 +63,7 @@
 
             mysqli_close($conn);
         ?>
+
         <br>
         <label for="productName">Product Name:</label>
         <input type="text" name="productName"><br><br>
