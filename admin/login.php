@@ -39,14 +39,61 @@ if(isset($_POST['submit'])){
 
    <!-- custom css file link  -->
    <link rel="stylesheet" href="style.css">
-
+   <style>
+      body {
+         background-color: #f2f2f2;
+         font-family: Arial, sans-serif;
+         margin: 0;
+         padding: 0;
+      }
+      
+      .form-container {
+         background-color: #fff;
+         width: 300px;
+         margin: 100px auto;
+         padding: 20px;
+         border-radius: 5px;
+         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+      
+      .form-container h3 {
+         text-align: center;
+         margin-bottom: 20px;
+         color: #333;
+      }
+      
+      .form-container .box {
+         width: 100%;
+         padding: 10px;
+         margin-bottom: 15px;
+         border: 1px solid #ccc;
+         border-radius: 4px;
+         outline: none;
+         font-size: 16px;
+      }
+      
+      .form-container .btn {
+         width: 100%;
+         padding: 10px;
+         background-color: #333;
+         border: none;
+         color: #fff;
+         font-size: 16px;
+         border-radius: 4px;
+         cursor: pointer;
+      }
+      
+      .form-container .btn:hover {
+         background-color: #555;
+      }
+   </style>
 </head>
 <body>
 <div class="form-container">
    <form action="" method="post">
       <h3> Admin login</h3>
-      <input type="text" name="name" placeholder="Username" required class="box">
-      <input type="password" name="password" placeholder="Password" required class="box">
+      <input type="text" name="name" style="width:210px; margin-left:25px;" placeholder="Username" required class="box">
+      <input type="password" name="password" style="width:210px; margin-left:25px;" placeholder="Password" required class="box">
       <input type="submit" name="submit" value="Login" class="btn">
    </form>
 </div>

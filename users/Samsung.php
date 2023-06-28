@@ -1,3 +1,13 @@
+<?php
+   if(!isset($_SESSION['email'])){
+  session_start();
+   }
+  include '../admin/config.php';
+   if(isset($_SESSION['email'])){
+    $email= $_SESSION['email'];
+   }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +29,7 @@
 <body>
 
  
-    <!-- top navbar -->
+   
 
     <!-- navbar -->
     <nav class="navbar navbar-expand-lg" id="navbar">
@@ -33,24 +43,31 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="main.php">Home</a>
               </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link" href="">Product</a>
-              </li> -->
+              
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Brands
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(67 0 86);">
-                  <li><a class="dropdown-item" href="#">Samsung</a></li>
-                  <li><a class="dropdown-item" href="#">Apple</a></li>
-                  <li><a class="dropdown-item" href="#">Videocon</a></li>
-                  <li><a class="dropdown-item" href="#">TCL</a></li>
-                  <li><a class="dropdown-item" href="#">CG</a></li>
-                  <li><a class="dropdown-item" href="#">Skyworth</a></li>
-                  <li><a class="dropdown-item" href="#">ddddddddddddddd</a></li>
-                  <li><a class="dropdown-item" href="#">Laptop</a></li>
-                  <li><a class="dropdown-item" href="#">PC Moniter</a></li>
-                </ul>
+                
+                <?php
+            $sql = "SELECT * FROM brands";
+            $result = mysqli_query($conn, $sql);
+
+            if(mysqli_num_rows($result) > 0){
+                echo "<ul class='dropdown-menu' aria-labelledby='navbarDropdown' style='background-color: rgb(67 0 86);'>";
+                //fetch rows from the result set
+                while ($row = mysqli_fetch_assoc($result)){
+                  echo "<li><a class='dropdown-item' href='" . $row['brandName'] . ".php'>" . $row['brandName'] . "</a></li>";
+
+                }
+            }
+            else{
+                echo "No data found";
+            }
+            
+            echo "</ul>";
+            
+        ?>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="about.php">About</a>
@@ -59,16 +76,20 @@
                 <a class="nav-link" href="contact.php">Contact</a>
               </li>
             </ul>
-            <form class="d-flex" id="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+           
 
-            <div class="top-navbar">
-            <a href="register.html"> 
+          <div class="top-navbar">
+            <a href="cart.php"> 
               <i class='fa fa-shopping-cart' style='color: white'></i>
-            </a>
-              <a href="login.php">Login</a>
+              </a>
+              <?php
+              if(isset($_SESSION['email'])){
+              echo "<a href='logout.php'>Logout</a>";
+              }
+              else{
+              echo "<a href='login.php'>Log In</a>";
+              }
+              ?>
           </div>
 
           </div>
@@ -82,8 +103,66 @@
 
 
 
+    
+    
 
 
+
+
+
+
+
+    <!-- product cards -->
+    <div class="container" id="product-cards">
+      <h1 class="text-center">PRODUCTS</h1>
+      <div class="row" style="margin-top: 30px;">
+          
+          <?php
+    $sql = "SELECT * FROM products WHERE brandID = 4";
+    $result = mysqli_query($conn, $sql);
+    if(mysqli_num_rows($result) > 0){
+      
+        while ($row = mysqli_fetch_assoc($result)){
+          echo "<div class='col-md-3 py-5 py-md-2'>";
+          echo "<form action='addToCart.php' method='POST'>";
+          echo "<div class='card' style='height:400px; overflow:auto; '>";
+            echo "<input type='hidden' name='productID' value='" . $row['productID'] . "'>";
+            echo "<img src='" . $row['productPhoto'] . "' alt='image'>";
+            echo "<div class='card-body'>";
+            echo "<h3 class='text-center'>" . $row['productName'] . "</h3>";
+            echo "<h2>Rs " . $row['price'] . " <span><input type='submit' style='font-size:15px;' name='addToCart' value='Add To Cart' class='fa-solid fa-cart-shopping'></span></h2>";
+            echo "</div>";            
+            echo "</form>";
+            echo "</div>";
+            echo "</div>";
+        
+        }
+    }
+    mysqli_close($conn);
+?>
+
+
+          
+        </div>
+  </div>
+  </div>
+
+
+        
+    <!-- product cards -->
+
+
+
+
+
+
+    
+    
+    
+    
+
+
+    <!-- footer -->
     <footer id="footer">
       <div class="footer-top">
         <div class="container">
@@ -158,6 +237,19 @@
 
 
     <a href="#" class="arrow"><i><img src="./images/arrow.png" alt=""></i></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 </body>

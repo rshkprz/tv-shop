@@ -79,18 +79,18 @@
   #bgImg1{
     height: 100%;
     width:90%;
-    background-image:url(images/pr1.png);
+    background-image:url(Bgimg/lgtv.png);
     background-size: cover;
     animation: slideshow 30s infinite;
     border-radius: 30px;
     border: black 1px solid;
   }
   @keyframes slideshow {
-  0% { background-image: url('images/pr1.png'); animation-delay: 20s; }
-  20% { background-image: url('images/pr2.png'); animation-delay: 20s; }
-  40% { background-image: url('images/pr3.png'); animation-delay: 20s; }
-  80% { background-image: url('images/pr4.png'); animation-delay: 20s; }
-  100% { background-image: url('images/pr5.png'); animation-delay: 20s; }
+  0% { background-image: url('Bgimg/lgtv.png'); animation-delay: 1s; }
+  20% { background-image: url('Bgimg/roku.png'); animation-delay: 1s; }
+  40% { background-image: url('Bgimg/77inch.png'); animation-delay: 1s; }
+  80% { background-image: url('Bgimg/sonytv.jpg'); animation-delay: 1s; }
+  100% { background-image: url('Bgimg/toshiba.png'); animation-delay: 1s; }
   }
 
 

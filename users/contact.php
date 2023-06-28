@@ -1,14 +1,14 @@
 <?php
-  include '../admin/config.php';
-  
+   if(!isset($_SESSION['email'])){
   session_start();
-
-  // $email = $_SESSION['email'];
-
-  // if(!isset($user_id)){
-  //   header('location:login.php');
-  // }
-
+   }
+  include '../admin/config.php';
+   if(isset($_SESSION['email'])){
+    $email= $_SESSION['email'];
+   }
+?>
+<?php
+ 
   if(isset($_POST['submit'])){
 
     $name = mysqli_real_escape_string($conn, $_POST['name']);
@@ -61,46 +61,56 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="main.php">Home</a>
               </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link" href="">Product</a>
-              </li> -->
+              
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Brands
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(67 0 86);">
-                  <li><a class="dropdown-item" href="#">Samsung</a></li>
-                  <li><a class="dropdown-item" href="#">Apple</a></li>
-                  <li><a class="dropdown-item" href="#">Videocon</a></li>
-                  <li><a class="dropdown-item" href="#">TCL</a></li>
-                  <li><a class="dropdown-item" href="#">CG</a></li>
-                  <li><a class="dropdown-item" href="#">Skyworth</a></li>
-                  <li><a class="dropdown-item" href="#">ddddddddddddddd</a></li>
-                  <li><a class="dropdown-item" href="#">Laptop</a></li>
-                  <li><a class="dropdown-item" href="#">PC Moniter</a></li>
-                </ul>
+                
+                <?php
+            $sql = "SELECT * FROM brands";
+            $result = mysqli_query($conn, $sql);
+
+            if(mysqli_num_rows($result) > 0){
+                echo "<ul class='dropdown-menu' aria-labelledby='navbarDropdown' style='background-color: rgb(67 0 86);'>";
+                //fetch rows from the result set
+                while ($row = mysqli_fetch_assoc($result)){
+                  echo "<li><a class='dropdown-item' href='#'>" . $row['brandName'] . "</a></li>";
+
+                }
+            }
+            else{
+                echo "No data found";
+            }
+            
+            echo "</ul>";
+            
+        ?>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html">About</a>
+                <a class="nav-link" href="about.php">About</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="contact.php">Contact</a>
               </li>
             </ul>
-            <form class="d-flex" id="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+           
 
-            <div class="top-navbar">
+          <div class="top-navbar">
             <a href="cart.php"> 
               <i class='fa fa-shopping-cart' style='color: white'></i>
-            </a>
-              <a href="login.php">Login</a>
+              </a>
+              <?php
+              if(isset($_SESSION['email'])){
+              echo "<a href='logout.php'>Logout</a>";
+              }
+              else{
+              echo "<a href='login.php'>Log In</a>";
+              }
+              ?>
           </div>
 
           </div>
@@ -191,22 +201,21 @@
             <div class="col-lg-3 col-md-6 footer-contact">
               <h3>TV Shop</h3>
               <p>
-                Karachi <br>
-                Sindh <br>
-                Pakistan <br>
+                Bhaktapur <br>
+                Nepal<br><br>
               </p>
-              <strong>Phone:</strong> +000000000000000 <br>
-              <strong>Email:</strong> electronicshop@.com <br>
+              <strong>Phone:</strong> +977 9800000000 <br>
+              <strong>Email:</strong> tvstore@.com <br>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Usefull Links</h4>
              <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Services</a></li>
+              <li><a href="home.php">Home</a></li>
+              <li><a href="about.php">About Us</a></li>
+              <!-- <li><a href="#">Services</a></li>
               <li><a href="#">Terms of service</a></li>
-              <li><a href="#">Privacy policey</a></li>
+              <li><a href="#">Privacy policey</a></li> -->
              </ul>
             </div>
 
@@ -218,17 +227,15 @@
               <h4>Our Services</h4>
 
              <ul>
-              <li><a href="#">PS 5</a></li>
-              <li><a href="#">Computer</a></li>
-              <li><a href="#">Gaming Laptop</a></li>
-              <li><a href="#">Mobile Phone</a></li>
-              <li><a href="#">Gaming Gadget</a></li>
+              <li>Televisions</li>
+              <li>Monitors</li>
+
              </ul>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Our Social Networks</h4>
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quia, quibusdam.</p>
+              <p>Catch us on different social platforms.</p>
 
               <div class="socail-links mt-3">
                 <a href="#"><i class="fa-brands fa-twitter"></i></a>

@@ -15,7 +15,6 @@ if (isset($_POST['logIn'])) {
         if ($password == $login_user["password"]) {
             $_SESSION['email'] = $email;
             $_SESSION['name'] = $login_user["name"];
-            
             header('Location: main.php');
             exit();
         } else {
@@ -140,10 +139,7 @@ mysqli_close($conn);
                 <a class="nav-link" href="contact.php">Contact</a>
               </li>
             </ul>
-            <form class="d-flex" id="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+           
 
             <div class="top-navbar">
                   <a href="login.php">Login</a>
@@ -179,22 +175,21 @@ mysqli_close($conn);
             <div class="col-lg-3 col-md-6 footer-contact">
               <h3>TV Shop</h3>
               <p>
-                Karachi <br>
-                Sindh <br>
-                Pakistan <br>
+                Bhaktapur <br>
+                Nepal<br><br>
               </p>
-              <strong>Phone:</strong> +000000000000000 <br>
-              <strong>Email:</strong> electronicshop@.com <br>
+              <strong>Phone:</strong> +977 9800000000 <br>
+              <strong>Email:</strong> tvstore@.com <br>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Usefull Links</h4>
              <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Services</a></li>
+              <li><a href="home.php">Home</a></li>
+              <li><a href="about.php">About Us</a></li>
+              <!-- <li><a href="#">Services</a></li>
               <li><a href="#">Terms of service</a></li>
-              <li><a href="#">Privacy policey</a></li>
+              <li><a href="#">Privacy policey</a></li> -->
              </ul>
             </div>
 
@@ -206,17 +201,15 @@ mysqli_close($conn);
               <h4>Our Services</h4>
 
              <ul>
-              <li><a href="#">PS 5</a></li>
-              <li><a href="#">Computer</a></li>
-              <li><a href="#">Gaming Laptop</a></li>
-              <li><a href="#">Mobile Phone</a></li>
-              <li><a href="#">Gaming Gadget</a></li>
+              <li>Televisions</li>
+              <li>Monitors</li>
+
              </ul>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Our Social Networks</h4>
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quia, quibusdam.</p>
+              <p>Catch us on different social platforms.</p>
 
               <div class="socail-links mt-3">
                 <a href="#"><i class="fa-brands fa-twitter"></i></a>

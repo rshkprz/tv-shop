@@ -5,9 +5,6 @@
   include '../admin/config.php';
    if(isset($_SESSION['email'])){
     $email= $_SESSION['email'];
-    $result = mysqli_query($conn, "SELECT userID FROM users WHERE email='$email'");
-    $row = mysqli_fetch_assoc($result);
-    $_SESSION['userID'] = $row['userID'];
    }
 ?>
 
@@ -60,7 +57,7 @@
                 echo "<ul class='dropdown-menu' aria-labelledby='navbarDropdown' style='background-color: rgb(67 0 86);'>";
                 //fetch rows from the result set
                 while ($row = mysqli_fetch_assoc($result)){
-                  echo "<li><a class='dropdown-item' href='#'>" . $row['brandName'] . "</a></li>";
+                  echo "<li><a class='dropdown-item' href='" . $row['brandName'] . ".php'>" . $row['brandName'] . "</a></li>";
 
                 }
             }
@@ -79,11 +76,7 @@
                 <a class="nav-link" href="contact.php">Contact</a>
               </li>
             </ul>
-            <form class="d-flex" id="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-
+    
           <div class="top-navbar">
             <a href="cart.php"> 
               <i class='fa fa-shopping-cart' style='color: white'></i>
@@ -117,8 +110,7 @@
         <br>
         Up To <span id="span2">50%</span> Off
       </h1>
-      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dicta, saepe.
-        <br>Lorem ipsum dolor sit amet consectetur.
+      <p>Welcome to our Online TV Store, where you'll find the latest <br> top-quality TVs with  a wide range of features to enhance your <br> home entertainment experience. <br>Discover the perfect TV that brings the cinema to your living room, <br>and start enjoying immersive viewing like never before.
       </p>
       <div class="btn"><button>Shop Now</button></div>
 
@@ -154,14 +146,14 @@
     if(mysqli_num_rows($result) > 0){
       
         while ($row = mysqli_fetch_assoc($result)){
-            echo "<div class='col-md-3 py-5 py-md-2'>";
-            echo "<div class='card' style='height:400px; display:flex; '>";
-            echo "<form action='addToCart.php' method='POST'>";
+          echo "<div class='col-md-3 py-5 py-md-2'>";
+          echo "<form action='addToCart.php' method='POST'>";
+          echo "<div class='card' style='height:400px; overflow:auto; '>";
             echo "<input type='hidden' name='productID' value='" . $row['productID'] . "'>";
             echo "<img src='" . $row['productPhoto'] . "' alt='image'>";
             echo "<div class='card-body'>";
             echo "<h3 class='text-center'>" . $row['productName'] . "</h3>";
-            echo "<h2>Rs " . $row['price'] . " <span><li><input type='submit' name='addToCart' value='Add To Cart' class='fa-solid fa-cart-shopping'></li></span></h2>";
+            echo "<h2>Rs " . $row['price'] . " <span><input type='submit' style='font-size:15px;' name='addToCart' value='Add To Cart' class='fa-solid fa-cart-shopping'></span></h2>";
             echo "</div>";            
             echo "</form>";
             echo "</div>";
@@ -226,22 +218,21 @@
             <div class="col-lg-3 col-md-6 footer-contact">
               <h3>TV Shop</h3>
               <p>
-                Karachi <br>
-                Sindh <br>
-                Pakistan <br>
+                Bhaktapur <br>
+                Nepal<br><br>
               </p>
-              <strong>Phone:</strong> +000000000000000 <br>
-              <strong>Email:</strong> electronicshop@.com <br>
+              <strong>Phone:</strong> +977 9800000000 <br>
+              <strong>Email:</strong> tvstore@.com <br>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Usefull Links</h4>
              <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Services</a></li>
+              <li><a href="home.php">Home</a></li>
+              <li><a href="about.php">About Us</a></li>
+              <!-- <li><a href="#">Services</a></li>
               <li><a href="#">Terms of service</a></li>
-              <li><a href="#">Privacy policey</a></li>
+              <li><a href="#">Privacy policey</a></li> -->
              </ul>
             </div>
 
@@ -253,17 +244,15 @@
               <h4>Our Services</h4>
 
              <ul>
-              <li><a href="#">PS 5</a></li>
-              <li><a href="#">Computer</a></li>
-              <li><a href="#">Gaming Laptop</a></li>
-              <li><a href="#">Mobile Phone</a></li>
-              <li><a href="#">Gaming Gadget</a></li>
+              <li>Televisions</li>
+              <li>Monitors</li>
+
              </ul>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Our Social Networks</h4>
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quia, quibusdam.</p>
+              <p>Catch us on different social platforms.</p>
 
               <div class="socail-links mt-3">
                 <a href="#"><i class="fa-brands fa-twitter"></i></a>

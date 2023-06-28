@@ -14,9 +14,13 @@
         header ('location: cart.php');
         exit();
      }
-     if(isset($_GET['delete'])){
-        $productID = $_GET['delete'];
-        mysqli_query($conn, "DELETE FROM `cart` WHERE productID = '$productID' AND userID = '" . $_SESSION['userID'] . "'") or die('query failed');
+     if(isset($_GET['productID'])){
+      $email = $_SESSION['email'];
+      $result = mysqli_query($conn, "SELECT userID FROM users WHERE email='$email'");
+      $row = mysqli_fetch_assoc($result);
+      $userID = $row['userID'];
+        $productID = $_GET['productID'];
+        mysqli_query($conn, "DELETE FROM `cart` WHERE productID = '$productID' AND userID = '$userID'") or die('query failed');
         header('location:cart.php');
      }
 ?>
@@ -38,6 +42,67 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">
     <!-- fonts links -->
+    <style>
+      .heading {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f2f2f2;
+}
+
+/* Image */
+table td img {
+  max-width: 100px;
+  height: auto;
+}
+
+/* Form */
+table td form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+table td form input[type="number"] {
+  width: 60px;
+  padding: 5px;
+}
+
+/* Total price */
+.cart-total p span {
+  font-weight: bold;
+  color: #ff0000;
+}
+
+/* Buttons */
+.option-btn {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+    </style>
 </head>
 <body>
 
@@ -56,24 +121,31 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="main.php">Home</a>
               </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link" href="">Product</a>
-              </li> -->
+              
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Brands
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(67 0 86);">
-                  <li><a class="dropdown-item" href="#">Samsung</a></li>
-                  <li><a class="dropdown-item" href="#">Apple</a></li>
-                  <li><a class="dropdown-item" href="#">Videocon</a></li>
-                  <li><a class="dropdown-item" href="#">TCL</a></li>
-                  <li><a class="dropdown-item" href="#">CG</a></li>
-                  <li><a class="dropdown-item" href="#">Skyworth</a></li>
-                  <li><a class="dropdown-item" href="#">ddddddddddddddd</a></li>
-                  <li><a class="dropdown-item" href="#">Laptop</a></li>
-                  <li><a class="dropdown-item" href="#">PC Moniter</a></li>
-                </ul>
+                
+                <?php
+            $sql = "SELECT * FROM brands";
+            $result = mysqli_query($conn, $sql);
+
+            if(mysqli_num_rows($result) > 0){
+                echo "<ul class='dropdown-menu' aria-labelledby='navbarDropdown' style='background-color: rgb(67 0 86);'>";
+                //fetch rows from the result set
+                while ($row = mysqli_fetch_assoc($result)){
+                  echo "<li><a class='dropdown-item' href='" . $row['brandName'] . ".php'>" . $row['brandName'] . "</a></li>";
+
+                }
+            }
+            else{
+                echo "No data found";
+            }
+            
+            echo "</ul>";
+            
+        ?>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="about.php">About</a>
@@ -82,22 +154,23 @@
                 <a class="nav-link" href="contact.php">Contact</a>
               </li>
             </ul>
-            <form class="d-flex" id="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-
-            <div class="top-navbar">
-            <a href="register.html"> 
+          <div class="top-navbar">
+            <a href="cart.php"> 
               <i class='fa fa-shopping-cart' style='color: white'></i>
-            </a>
-              <a href="login.php">Login</a>
+              </a>
+              <?php
+              if(isset($_SESSION['email'])){
+              echo "<a href='logout.php'>Logout</a>";
+              }
+              else{
+              echo "<a href='login.php'>Log In</a>";
+              }
+              ?>
           </div>
 
           </div>
         </div>
       </nav>
-    <!-- navbar -->
     
 
     <!-- CART -->
@@ -142,7 +215,7 @@
             <input type='number' name='quantity' value='" . $rows['quantity'] . "'>
             <input type='submit' min='1' name='updateCart' value='Update' class='option-btn'></td>";
             echo "<td>" . $subTotal = ($rows['quantity'] * $rows['price'])."</form></td>";
-            echo '<td><a href="cart.php?delete=' . $rows['productID'] . '"  onclick="return confirm(\'Delete item from cart?\');">Delete</a></td>';
+            echo '<td><a href="cart.php?productID=' . $rows['productID'] . '"  onclick="return confirm(\'Delete item from cart?\');">Delete</a></td>';
             
             
             
@@ -176,6 +249,7 @@
 
 
     <!-- footer -->
+    <!-- footer -->
     <footer id="footer">
       <div class="footer-top">
         <div class="container">
@@ -184,22 +258,21 @@
             <div class="col-lg-3 col-md-6 footer-contact">
               <h3>TV Shop</h3>
               <p>
-                Karachi <br>
-                Sindh <br>
-                Pakistan <br>
+                Bhaktapur <br>
+                Nepal<br><br>
               </p>
-              <strong>Phone:</strong> +000000000000000 <br>
-              <strong>Email:</strong> electronicshop@.com <br>
+              <strong>Phone:</strong> +977 9800000000 <br>
+              <strong>Email:</strong> tvstore@.com <br>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Usefull Links</h4>
              <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Services</a></li>
+              <li><a href="home.php">Home</a></li>
+              <li><a href="about.php">About Us</a></li>
+              <!-- <li><a href="#">Services</a></li>
               <li><a href="#">Terms of service</a></li>
-              <li><a href="#">Privacy policey</a></li>
+              <li><a href="#">Privacy policey</a></li> -->
              </ul>
             </div>
 
@@ -211,17 +284,15 @@
               <h4>Our Services</h4>
 
              <ul>
-              <li><a href="#">PS 5</a></li>
-              <li><a href="#">Computer</a></li>
-              <li><a href="#">Gaming Laptop</a></li>
-              <li><a href="#">Mobile Phone</a></li>
-              <li><a href="#">Gaming Gadget</a></li>
+              <li>Televisions</li>
+              <li>Monitors</li>
+
              </ul>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Our Social Networks</h4>
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quia, quibusdam.</p>
+              <p>Catch us on different social platforms.</p>
 
               <div class="socail-links mt-3">
                 <a href="#"><i class="fa-brands fa-twitter"></i></a>
@@ -244,6 +315,7 @@
 
       </div>
     </footer>
+
     <!-- footer -->
     <a href="#" class="arrow"><i><img src="./images/arrow.png" alt=""></i></a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

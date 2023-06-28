@@ -5,7 +5,10 @@ include '../admin/config.php';
 session_start();
 
 $email = $_SESSION['email'];
-$userID = $_SESSION['userID'];
+$result = mysqli_query($conn, "SELECT userID FROM users WHERE email='$email'");
+$row = mysqli_fetch_assoc($result);
+$userID = $row['userID'];
+
 if(!isset($email)){
    header('location:login.php');
 }
@@ -62,7 +65,62 @@ if(isset($_POST['order_btn'])){
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">
     <!-- fonts links -->
-</head>
+    <style>
+      /* Add custom styles for the checkout page */
+.checkout {
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+.checkout h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.checkout .flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.checkout .inputBox {
+  width: calc(50% - 10px);
+  margin-bottom: 20px;
+}
+
+.checkout .inputBox span {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.checkout input[type="text"],
+.checkout select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.checkout .btn {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Add any other necessary styles to customize the page */
+
+    </style>
+  </head>
 <body>
 
  
@@ -80,24 +138,31 @@ if(isset($_POST['order_btn'])){
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="main.php">Home</a>
               </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link" href="">Product</a>
-              </li> -->
+              
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Brands
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(67 0 86);">
-                  <li><a class="dropdown-item" href="#">Samsung</a></li>
-                  <li><a class="dropdown-item" href="#">Apple</a></li>
-                  <li><a class="dropdown-item" href="#">Videocon</a></li>
-                  <li><a class="dropdown-item" href="#">TCL</a></li>
-                  <li><a class="dropdown-item" href="#">CG</a></li>
-                  <li><a class="dropdown-item" href="#">Skyworth</a></li>
-                  <li><a class="dropdown-item" href="#">ddddddddddddddd</a></li>
-                  <li><a class="dropdown-item" href="#">Laptop</a></li>
-                  <li><a class="dropdown-item" href="#">PC Moniter</a></li>
-                </ul>
+                
+                <?php
+            $sql = "SELECT * FROM brands";
+            $result = mysqli_query($conn, $sql);
+
+            if(mysqli_num_rows($result) > 0){
+                echo "<ul class='dropdown-menu' aria-labelledby='navbarDropdown' style='background-color: rgb(67 0 86);'>";
+                //fetch rows from the result set
+                while ($row = mysqli_fetch_assoc($result)){
+                  echo "<li><a class='dropdown-item' href='" . $row['brandName'] . ".php'>" . $row['brandName'] . "</a></li>";
+
+                }
+            }
+            else{
+                echo "No data found";
+            }
+            
+            echo "</ul>";
+            
+        ?>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="about.php">About</a>
@@ -106,24 +171,26 @@ if(isset($_POST['order_btn'])){
                 <a class="nav-link" href="contact.php">Contact</a>
               </li>
             </ul>
-            <form class="d-flex" id="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+        
 
-            <div class="top-navbar">
-            <a href="register.html"> 
+          <div class="top-navbar">
+            <a href="cart.php"> 
               <i class='fa fa-shopping-cart' style='color: white'></i>
-            </a>
-              <a href="login.php">Login</a>
+              </a>
+              <?php
+              if(isset($_SESSION['email'])){
+              echo "<a href='logout.php'>Logout</a>";
+              }
+              else{
+              echo "<a href='login.php'>Log In</a>";
+              }
+              ?>
           </div>
 
           </div>
         </div>
       </nav>
-    <!-- navbar -->
     
-    <!-- checkout -->
     
 
    
@@ -188,22 +255,21 @@ if(isset($_POST['order_btn'])){
             <div class="col-lg-3 col-md-6 footer-contact">
               <h3>TV Shop</h3>
               <p>
-                Karachi <br>
-                Sindh <br>
-                Pakistan <br>
+                Bhaktapur <br>
+                Nepal<br><br>
               </p>
-              <strong>Phone:</strong> +000000000000000 <br>
-              <strong>Email:</strong> electronicshop@.com <br>
+              <strong>Phone:</strong> +977 9800000000 <br>
+              <strong>Email:</strong> tvstore@.com <br>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Usefull Links</h4>
              <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Services</a></li>
+              <li><a href="home.php">Home</a></li>
+              <li><a href="about.php">About Us</a></li>
+              <!-- <li><a href="#">Services</a></li>
               <li><a href="#">Terms of service</a></li>
-              <li><a href="#">Privacy policey</a></li>
+              <li><a href="#">Privacy policey</a></li> -->
              </ul>
             </div>
 
@@ -215,17 +281,15 @@ if(isset($_POST['order_btn'])){
               <h4>Our Services</h4>
 
              <ul>
-              <li><a href="#">PS 5</a></li>
-              <li><a href="#">Computer</a></li>
-              <li><a href="#">Gaming Laptop</a></li>
-              <li><a href="#">Mobile Phone</a></li>
-              <li><a href="#">Gaming Gadget</a></li>
+              <li>Televisions</li>
+              <li>Monitors</li>
+
              </ul>
             </div>
 
             <div class="col-lg-3 col-md-6 footer-links">
               <h4>Our Social Networks</h4>
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quia, quibusdam.</p>
+              <p>Catch us on different social platforms.</p>
 
               <div class="socail-links mt-3">
                 <a href="#"><i class="fa-brands fa-twitter"></i></a>

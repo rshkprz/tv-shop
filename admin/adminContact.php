@@ -9,66 +9,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users</title>
     <style>
-       .container {
-            max-width: 800px;
-            margin: 0 auto;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
             padding: 20px;
         }
-
+        
         h1 {
             text-align: center;
-            margin-bottom: 30px;
+            color: #333;
+            margin-bottom: 20px;
         }
-
+        
         table {
             width: 100%;
+            margin-top: 20px;
             border-collapse: collapse;
-            background-color: #f8f8f8;
+            padding:10px;
         }
-
+        
         th, td {
-            padding: 12px;
+            padding: 10px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
-
+        
+        th:first-child {
+            padding-right: 40px; /* Increase the gap between "Email" and "Message" */
+        }
+        
         th {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        tr:nth-child(even) {
             background-color: #f2f2f2;
-            font-weight: bold;
         }
-
-        tr:hover {
-            background-color: #e0e0e0;
-        }
-
-        p.no-data {
-            text-align: center;
-            font-style: italic;
-            color: #888;
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto; /* Center the container with a margin on the left and right */
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Users</h1>
+        <h1>User's Messages</h1>
         <?php
-            $sql = "SELECT * FROM orders";
+            $sql = "SELECT * FROM message";
             $result = mysqli_query($conn, $sql);
 
             if(mysqli_num_rows($result) > 0){
                 echo "<table>";
-                echo "<tr><th>User ID</th><th>Order ID</th><th>Method</th><th>Delivery Address</th><th>Order Total Price</th><th>Placed On</th></tr>";
+                echo "<tr><th>Email</th><th>Message</th></tr>";
 
                 //fetch rows from the result set
                 while ($row = mysqli_fetch_assoc($result)){
-
                     echo "<tr>";
-                    echo "<td>". $row["userID"] . "</td>";
-                    echo "<td>". $row["orderID"] . "</td>";
-                    echo "<td>". $row["method"] . "</td>";
-                    echo "<td>". $row["deliveryAddress"] . "</td>";                  
-                    echo "<td>". $row["orderTotalPrice"] . "</td>";
-                    echo "<td>". $row["placedOn"] . "</td>";
+                    echo "<td>". $row["email"] . "</td>";
+                    echo "<td>". $row["message"] . "</td>";
                     echo "</tr>";
                 }
                 echo "</table>";

@@ -1,18 +1,13 @@
 <?php
     include 'config.php';
     require 'admin.php';
-
+    $productID=$_GET['productID'];
     if(isset($_POST['submit'])){
         $productName = $_POST["productName"];
-        $description = $_POST["description"];
         $price = $_POST["price"];
-        $brandID = $_POST["chooseBrand"];
-        $fileName = $_FILES["productPhoto"]["name"];
-        $tempName = $_FILES["productPhoto"]["tmp_name"];
-        $folder = "../images/".$fileName;
-        move_uploaded_file($tempName, $folder);
+
     
-        $sql = "INSERT INTO products(productName, description, price, productPhoto,brandID) VALUES ('$productName', '$description', '$price', '$folder','$brandID')";
+        $sql = "UPDATE products SET productName = '$productName', price = '$price' WHERE productID = '$productID'";
         if (mysqli_query($conn, $sql)) {
             header('Location: products.php');
             exit();
@@ -97,46 +92,36 @@
     </style>
 </head>
 <body>
-    <h1>Add Product</h1>
-    <div class="formContainer">
-        <form action="" method="POST" enctype="multipart/form-data">
-            <h3>Add product</h3>
-            <label for="choosebrand">Choose Brand:</label>
-            <?php
-                $sql = "SELECT * FROM brands";
-                $result = mysqli_query($conn, $sql);
 
-                if(mysqli_num_rows($result) > 0){
-                    echo "<select name='chooseBrand'>";
-                    //fetch rows from the result set
-                    while ($row = mysqli_fetch_assoc($result)){
-                        echo "<option value='" . $row['brandID'] . "'>" . $row['brandName'] . "</option>";
-                        
+    <h1>Edit Products</h1>
+    
+        <?php
+        //$productID = $_GET['productID'];
+        $sql = "SELECT * FROM products WHERE productID = '$productID'";
+        $result = mysqli_query($conn,$sql);
+        while ($row = mysqli_fetch_assoc($result)) {
+            echo "<tr>";
+            
+            
+            echo "<td>
+                <form method='post' action=''>
+                <label for='productName'>Product Name:</label>
+                    <input type='text' name='productName'  value='" . $row['productName'] . "'><br><br>
+                
+                
+                <label for='price'>Price:</label>
+                    <input type='text' name='price' value='" . $row['price'] . "'>
+               
+                    <input type='submit' name='submit' value='Edit'>
+                </form>
+            </td>";
+            echo "</tr>";
+        }
+        ?>
+   
 
-                    }
-                    echo "</select>";
-                }
-                else{
-                    echo "No data found";
-                }
-                mysqli_close($conn);
-            ?>
 
-            <br>
-            <label for="productName">Product Name:</label>
-            <input type="text" name="productName"><br><br>
 
-            <label for="description">Product Description:</label>
-            <input type="text" name="description"><br><br>
-
-            <label for="price">Price(Rs): </label>
-            <input type="text" name="price"><br><br>
-
-            <label for="photo">Choose image:</label>
-            <input type="file" name="productPhoto"><br><br>
-
-            <input type="submit" value="Add" name="submit" class="button">
-        </form>
-    </div>
 </body>
 </html>
+
